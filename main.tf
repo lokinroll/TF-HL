@@ -14,12 +14,19 @@ provider "aws" {
 
 data "aws_subnet_ids" "public_subnets" {
   vpc_id = module.vpc.vpc_id
+
 }
 
-data "aws_security_group" "http_sg" {
-  name   = "http_sg"
-  vpc_id = module.vpc.vpc_id
-}
+//data "aws_subnet" "destination" {
+//  for_each = data.aws_subnet_ids.destination.ids
+//
+//  id = each.value
+//}
+
+//data "aws_security_group" "http_sg" {
+//  name   = "http_sg"
+//  vpc_id = module.vpc.vpc_id
+//}
 
 data "aws_ami" "amazon_linux" {
   most_recent = true
@@ -109,7 +116,7 @@ module "ec2" {
 
   name          = "itea-terraform"
   ami           = data.aws_ami.amazon_linux.id
-  instance_type = "t2."
+  instance_type = "t2.micro"
   subnet_id     = tolist(data.aws_subnet_ids.public_subnets.ids)[0]
   #  private_ips                 = ["172.31.32.5", "172.31.46.20"]
   vpc_security_group_ids      = [module.http_sg.this_security_group_id]
